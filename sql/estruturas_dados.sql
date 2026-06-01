@@ -1,111 +1,99 @@
--- ============================================================
--- EstruturaNET — Banco de Dados MySQL
--- Arquivo: estruturas_dados.sql
--- Versão: 1.0
--- ============================================================
--- Como usar:
---   1. Abra o phpMyAdmin (ou terminal MySQL)
---   2. Crie o banco: CREATE DATABASE estruturas_dados CHARACTER SET utf8mb4;
---   3. Importe este arquivo
--- OU execute no terminal:
---   mysql -u root -p < estruturas_dados.sql
--- ============================================================
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 01-Jun-2026 às 19:27
+-- Versão do servidor: 10.4.27-MariaDB
+-- versão do PHP: 8.2.0
 
--- Cria o banco se não existir
-CREATE DATABASE IF NOT EXISTS `estruturas_dados`
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
-USE `estruturas_dados`;
 
--- ============================================================
--- Tabela: conteudos
--- Guarda os conteúdos adicionais cadastrados pelo admin
--- Os conteúdos principais estão nas páginas PHP (tad.php, etc.)
--- Esta tabela permite ADICIONAR conteúdo extra via painel
--- ============================================================
-DROP TABLE IF EXISTS `conteudos`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `estruturas_dados`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `conteudos`
+--
 
 CREATE TABLE `conteudos` (
-    `id`        INT AUTO_INCREMENT PRIMARY KEY,
-    `estrutura` ENUM('tad', 'lista_simples', 'lista_dupla') NOT NULL COMMENT 'Qual estrutura esse conteúdo pertence',
-    `tipo`      ENUM('teoria', 'exemplo', 'codigo', 'dica', 'exercicio') NOT NULL DEFAULT 'teoria',
-    `titulo`    VARCHAR(255) NOT NULL COMMENT 'Título do bloco de conteúdo',
-    `conteudo`  TEXT NOT NULL COMMENT 'Corpo do conteúdo (HTML básico permitido)',
-    `ordem`     INT NOT NULL DEFAULT 10 COMMENT 'Ordem de exibição (menor = primeiro)',
-    `ativo`     TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1=ativo, 0=inativo',
-    `criado_em` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `editado_em` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX `idx_estrutura` (`estrutura`),
-    INDEX `idx_ordem`     (`estrutura`, `ordem`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='Conteúdos extras cadastrados pelo administrador';
+  `id` int(11) NOT NULL,
+  `estrutura` enum('tad','lista_simples','lista_dupla') NOT NULL COMMENT 'Qual estrutura esse conteúdo pertence',
+  `tipo` enum('teoria','exemplo','codigo','dica','exercicio') NOT NULL DEFAULT 'teoria',
+  `titulo` varchar(255) NOT NULL COMMENT 'Título do bloco de conteúdo',
+  `conteudo` text NOT NULL COMMENT 'Corpo do conteúdo (HTML básico permitido)',
+  `ordem` int(11) NOT NULL DEFAULT 10 COMMENT 'Ordem de exibição (menor = primeiro)',
+  `ativo` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=ativo, 0=inativo',
+  `criado_em` datetime NOT NULL DEFAULT current_timestamp(),
+  `editado_em` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Conteúdos extras cadastrados pelo administrador';
 
--- ============================================================
--- Dados de exemplo
--- ============================================================
-INSERT INTO `conteudos` (`estrutura`, `tipo`, `titulo`, `conteudo`, `ordem`) VALUES
+--
+-- Extraindo dados da tabela `conteudos`
+--
 
--- TAD
-('tad', 'dica', 'Dica: TAD não é sobre linguagem de programação',
-'<p>Uma coisa que confunde muito quem tá começando: o TAD não depende de nenhuma linguagem específica.</p>
-<p>Você pode ter um TAD Pilha implementado em C, Java, Python, C# ou qualquer outra linguagem. O que muda é a implementação, não o conceito.</p>
-<p><strong>O TAD é um conceito matemático/lógico, não de programação.</strong></p>', 50),
+INSERT INTO `conteudos` (`id`, `estrutura`, `tipo`, `titulo`, `conteudo`, `ordem`, `ativo`, `criado_em`, `editado_em`) VALUES
+(8, 'tad', 'teoria', 'O que é TAD?', 'TAD significa Tipo Abstrato de Dados. Para entender o que é um TAD, primeiro é preciso entender o que é abstração.\r\n\r\nAbstração é a ideia de que você pode usar algo sem precisar saber como ele funciona por dentro. Você usa o controle remoto da TV sem precisar saber como ele transmite o sinal infravermelho. Você usa o Google Maps sem precisar entender o algoritmo que calcula a rota.\r\n\r\nDefinição:\r\nUm TAD é a especificação de um conjunto de dados e das operações que podem ser feitas sobre esses dados, sem se preocupar com como isso vai ser implementado. Você define o \"quê\", não o \"como\".\r\nUm TAD funciona como um contrato: ele diz quais operações aquele tipo de dado vai oferecer, mas quem implementa esse contrato pode fazer do jeito que quiser.', 1, 1, '2026-06-01 14:00:47', '2026-06-01 14:00:47'),
+(9, 'tad', 'exemplo', 'Abstração na prática', 'Um exemplo concreto: pensa numa conta bancária.\r\n\r\nO que o usuário vê (abstração)	O que acontece por dentro (implementação)\r\nDepositar dinheiro	Atualiza registro no banco de dados, calcula juros, registra histórico...\r\nSacar dinheiro	Verifica saldo, checa limite, gera comprovante, debita da conta...\r\nVer saldo	Faz query no banco, soma transações, aplica regras de bloqueio...\r\nO cliente do banco não precisa saber de nada disso. Ele só precisa saber que pode depositar(), sacar() e verSaldo(). Isso é abstração. Isso é TAD.\r\n\r\nPonto importante:\r\nA abstração não é sobre esconder por preguiça. É sobre separar responsabilidades. Quem usa não precisa se preocupar com detalhes de implementação. Quem implementa não precisa expor cada detalhe pra quem usa.\r\n', 3, 1, '2026-06-01 14:01:46', '2026-06-01 14:09:00'),
+(10, 'tad', 'teoria', 'Interface vs Implementação', 'A interface define o \"quê\":\r\nQuais dados o tipo guarda\r\nQuais operações existem\r\nO que cada operação recebe e retorna\r\nExemplo — TAD Lista:\r\n\r\ninserir(valor) — adiciona um elemento\r\nremover(valor) — remove um elemento\r\nbuscar(valor) — retorna true/false\r\nestaVazia() — retorna true/false\r\ntamanho() — retorna o número de elementos', 4, 1, '2026-06-01 14:02:28', '2026-06-01 14:08:52'),
+(11, 'tad', 'exemplo', 'Exemplo: TAD Pilha', 'A Pilha (Stack) é um dos TADs mais conhecidos. A regra é simples: o último elemento que entrou é o primeiro que sai. Chamamos isso de LIFO (Last In, First Out — último a entrar, primeiro a sair).', 5, 1, '2026-06-01 14:03:23', '2026-06-01 14:08:24'),
+(12, 'tad', 'exemplo', 'Exemplo: TAD Fila', 'A Fila (Queue) tem a regra oposta: o primeiro que entrou é o primeiro que sai. Chamamos de FIFO (First In, First Out).\r\n\r\nAnalogia do mundo real:\r\nUma fila de banco. Quem chegou primeiro é atendido primeiro. Quem entra fica no fim da fila, quem é atendido sai do início.', 6, 1, '2026-06-01 14:03:56', '2026-06-01 14:08:17'),
+(13, 'tad', 'codigo', 'Código em C#', '// A INTERFACE define o contrato do TAD.\r\n// Ela diz quais operações a pilha precisa ter,\r\n// mas não diz nada sobre como elas vão funcionar.\r\npublic interface IPilha<T>\r\n{\r\n    void Push(T valor);   // empilha um elemento\r\n    T Pop();              // remove e retorna o topo\r\n    T Peek();             // consulta o topo sem remover\r\n    bool EstaVazia();     // verifica se a pilha está vazia\r\n    int Tamanho();        // retorna a quantidade de elementos\r\n}\r\n\r\n// A IMPLEMENTAÇÃO é onde a lógica de fato acontece.\r\n// Aqui usamos um array interno para guardar os dados.\r\n// Poderíamos ter outra implementação usando lista encadeada\r\n// e a interface continuaria sendo exatamente a mesma.\r\npublic class PilhaArray<T> : IPilha<T>\r\n{\r\n    private T[] dados;\r\n    private int topo;\r\n\r\n    // capacidade define o tamanho máximo da pilha.\r\n    // Para uma implementação sem limite fixo, seria necessário\r\n    // redimensionar o array dinamicamente — mas para fins didáticos,\r\n    // um tamanho fixo é suficiente.\r\n    public PilhaArray(int capacidade = 100)\r\n    {\r\n        dados = new T[capacidade];\r\n        topo  = -1; // -1 indica que a pilha está vazia\r\n    }\r\n\r\n    public void Push(T valor)\r\n    {\r\n        if (topo == dados.Length - 1)\r\n            throw new InvalidOperationException(\"Pilha cheia.\");\r\n\r\n        topo++;\r\n        dados[topo] = valor;\r\n    }\r\n\r\n    public T Pop()\r\n    {\r\n        if (EstaVazia())\r\n            throw new InvalidOperationException(\"Pilha vazia.\");\r\n\r\n        T valorDoTopo = dados[topo];\r\n        topo--;\r\n        return valorDoTopo;\r\n    }\r\n\r\n    public T Peek()\r\n    {\r\n        if (EstaVazia())\r\n            throw new InvalidOperationException(\"Pilha vazia.\");\r\n\r\n        // Diferente do Pop: apenas lê o topo, sem alterar o ponteiro.\r\n        return dados[topo];\r\n    }\r\n\r\n    public bool EstaVazia()\r\n    {\r\n        return topo == -1;\r\n    }\r\n\r\n    public int Tamanho()\r\n    {\r\n        // topo + 1 porque o índice começa em zero.\r\n        // Se topo for 0, há 1 elemento; se for 2, há 3.\r\n        return topo + 1;\r\n    }\r\n}\r\n\r\n// Exemplo de uso\r\nclass Programa\r\n{\r\n    static void Main()\r\n    {\r\n        // Note que declaramos a variável como IPilha, não PilhaArray.\r\n        // Isso é a abstração funcionando: o código abaixo não sabe\r\n        // (nem precisa saber) que existe um array por baixo.\r\n        IPilha<int> pilha = new PilhaArray<int>();\r\n\r\n        pilha.Push(10);\r\n        pilha.Push(20);\r\n        pilha.Push(30);\r\n\r\n        Console.WriteLine(\"Tamanho: \" + pilha.Tamanho()); // 3\r\n        Console.WriteLine(\"Topo: \"    + pilha.Peek());    // 30\r\n\r\n        Console.WriteLine(pilha.Pop()); // 30\r\n        Console.WriteLine(pilha.Pop()); // 20\r\n        Console.WriteLine(pilha.Pop()); // 10\r\n\r\n        Console.WriteLine(\"Vazia? \" + pilha.EstaVazia()); // True\r\n    }\r\n}', 2, 1, '2026-06-01 14:04:40', '2026-06-01 14:09:07'),
+(14, 'tad', 'teoria', 'Resumo', 'Pontos principais do TAD:\r\nTAD = contrato\r\n— define o \"quê\" sem dizer o \"como\"\r\nAbstração\r\n— usar sem precisar conhecer os detalhes internos\r\nInterface\r\n— lista de operações disponíveis\r\nImplementação\r\n— código real que faz funcionar\r\nPilha (LIFO)\r\n— último a entrar, primeiro a sair\r\nFila (FIFO)\r\n— primeiro a entrar, primeiro a sair\r\nUma mesma interface pode ter\r\nvárias implementações\r\ndiferentes', 7, 1, '2026-06-01 14:05:45', '2026-06-01 14:08:44'),
+(15, 'lista_simples', 'teoria', 'O que é uma Lista Simplesmente Encadeada?', 'Antes de falar de lista encadeada, pensa no que você já conhece: o array. Um array é uma sequência de elementos guardados em posições de memória contíguas, ou seja, um do lado do outro na memória.\r\n\r\nO problema do array é que ele tem tamanho fixo, e inserir ou remover elementos no meio é custoso porque você precisa deslocar todos os outros elementos.\r\n\r\nProblema do array:\r\nEm um array de 1000 elementos, inserir na posição 1 exige mover os outros 999 elementos. Isso é O(n) — o custo cresce com o tamanho da lista.\r\nA Lista Encadeada resolve isso. Em vez de guardar os elementos todos juntos na memória, cada elemento fica em qualquer lugar da memória e carrega uma referência que aponta pro próximo elemento.', 1, 1, '2026-06-01 14:07:31', '2026-06-01 14:07:31'),
+(16, 'lista_simples', 'teoria', 'O que é um Nó?', 'O nó (em inglês: node) é a unidade básica da lista encadeada. Cada nó tem exatamente duas coisas:\r\n\r\nParte do Nó	O que é	Analogia\r\ndado / valor	O valor que o nó guarda (int, string, objeto...)	O conteúdo de uma caixa\r\nproximo / next	Referência para o próximo nó da lista	Uma seta apontando para a próxima caixa\r\nEstrutura de um Nó:', 2, 1, '2026-06-01 14:10:05', '2026-06-01 14:10:05'),
+(17, 'lista_simples', 'teoria', 'Como a lista se encadeia', 'Pensa numa corrente. Cada elo está ligado ao próximo. Para chegar no quinto elo, você passa pelo primeiro, segundo, terceiro, quarto. Não tem atalho. Essa é a lógica da lista encadeada.\r\n\r\nLista com 4 nós:\r\n\r\nHEAD (cabeça)\r\n10\r\npróx ↓\r\n→\r\n20\r\npróx ↓\r\n→\r\n30\r\npróx ↓\r\n→\r\n40\r\npróx ↓\r\n→\r\nnull\r\nHEAD aponta pro primeiro nó. Cada nó aponta pro próximo. O último aponta pra null.\r\n\r\nO ponteiro HEAD:\r\nA lista guarda apenas o ponteiro head (cabeça), que aponta pro primeiro nó. A partir daí, você percorre a lista seguindo as referências \"próximo\" de cada nó. Se head == null, a lista está vazia.', 3, 1, '2026-06-01 14:11:05', '2026-06-01 14:11:16'),
+(18, 'lista_simples', 'teoria', 'Operações da Lista', 'Operação	Complexidade	O que faz\r\nInserir no início	O(1)	Cria nó, aponta pra HEAD, HEAD passa a ser o novo nó.\r\nInserir no fim	O(n)	Precisa percorrer a lista inteira pra achar o último nó.\r\nInserir no meio	O(n)	Percorre até a posição e ajusta os ponteiros.\r\nRemover do início	O(1)	HEAD passa a apontar pro segundo nó.\r\nRemover do fim/meio	O(n)	Percorre até o nó anterior ao que vai ser removido.\r\nBusca	O(n)	No pior caso, percorre a lista inteira.\r\nAcesso por índice	O(n)	Não há índice direto, é necessário percorrer.\r\nComparando com array:\r\nO array acessa qualquer elemento em O(1) pelo índice. A lista encadeada não tem essa vantagem. Mas a lista é muito melhor para inserir e remover no início — O(1) contra O(n) do array. Cada estrutura tem seu caso de uso.', 4, 1, '2026-06-01 14:12:02', '2026-06-01 14:12:02'),
+(19, 'lista_simples', 'teoria', 'Como funciona a Inserção', 'Inserir no início — O(1)\r\nAntes da inserção do nó com valor 5:\r\n\r\nHEAD→\r\n10\r\npróx\r\n→\r\n20\r\npróx\r\n→\r\nnull\r\n↓\r\nDepois da inserção (5 virou o novo HEAD):\r\n\r\nHEAD→\r\n5\r\npróx\r\n→\r\n10\r\npróx\r\n→\r\n20\r\npróx\r\n→\r\nnull\r\nPasso a passo:\r\nCria um novo nó com o valor desejado\r\nO ponteiro proximo do novo nó aponta pra quem era o HEAD\r\nHEAD passa a apontar pro novo nó\r\nPronto — 3 passos, independente do tamanho da lista\r\n', 5, 1, '2026-06-01 14:13:05', '2026-06-01 14:13:05'),
+(20, 'lista_simples', 'exemplo', 'Como funciona a Remoção', 'Para remover um nó, você precisa do nó anterior a ele. É o ponteiro desse nó anterior que precisa ser ajustado para \"pular\" o nó removido.\r\n\r\nRemoção do início — O(1)\r\nHEAD passa a apontar pro segundo nó (head = head.proximo)\r\nO nó removido fica sem referências e o garbage collector cuida do resto\r\nRemoção do meio — O(n)\r\nPercorre a lista até achar o nó anterior ao que vai ser removido\r\nO ponteiro do nó anterior passa a apontar pro nó depois do removido\r\nO nó removido fica sem referências\r\nErro comum:\r\nAvançar na lista com atual = atual.proximo sem guardar quem veio antes. Se você perde a referência do nó anterior, não consegue mais ajustar o ponteiro necessário para a remoção.', 6, 1, '2026-06-01 14:14:09', '2026-06-01 14:14:09'),
+(21, 'lista_simples', 'teoria', 'Como funciona a Busca', 'Para buscar um elemento, você começa do HEAD e avança nó a nó até encontrar o que procura ou chegar no null.\r\n\r\nBusca linear — O(n):\r\nNo pior caso (elemento não existe ou está no fim), você percorre a lista inteira. Diferente de um array ordenado com busca binária, aqui não há como pular elementos porque não existe índice direto.', 7, 1, '2026-06-01 14:14:49', '2026-06-01 14:14:49'),
+(22, 'lista_simples', 'codigo', 'Código completo em C#', '\r\n// ==========================================\r\n// Classe do Nó\r\n// ==========================================\r\n\r\npublic class No\r\n{\r\n    public int Dado;\r\n    public No Proximo;\r\n\r\n    public No(int valor)\r\n    {\r\n        Dado     = valor;\r\n        Proximo  = null; // em C#, campos de referência já são null por padrão,\r\n                         // mas deixar explícito torna a intenção mais clara\r\n    }\r\n}\r\n\r\n// ==========================================\r\n// Classe da Lista\r\n// ==========================================\r\n\r\npublic class ListaSimples\r\n{\r\n    private No cabeca;\r\n\r\n    public ListaSimples()\r\n    {\r\n        cabeca = null;\r\n    }\r\n\r\n    public bool EstaVazia()\r\n    {\r\n        return cabeca == null;\r\n    }\r\n\r\n    // Inserir no início — O(1)\r\n    public void InserirInicio(int valor)\r\n    {\r\n        No novoNo = new No(valor);\r\n        novoNo.Proximo = cabeca; // novo nó aponta pra quem era o primeiro\r\n        cabeca = novoNo;         // agora o novo nó é o primeiro\r\n    }\r\n\r\n    // Inserir no fim — O(n)\r\n    public void InserirFim(int valor)\r\n    {\r\n        No novoNo = new No(valor);\r\n\r\n        if (EstaVazia())\r\n        {\r\n            cabeca = novoNo;\r\n            return;\r\n        }\r\n\r\n        // percorre até o último nó\r\n        No atual = cabeca;\r\n        while (atual.Proximo != null)\r\n            atual = atual.Proximo;\r\n\r\n        atual.Proximo = novoNo;\r\n    }\r\n\r\n    // Remover do início — O(1)\r\n    public bool RemoverInicio()\r\n    {\r\n        if (EstaVazia())\r\n        {\r\n            Console.WriteLine(\"A lista está vazia.\");\r\n            return false;\r\n        }\r\n\r\n        cabeca = cabeca.Proximo;\r\n        return true;\r\n    }\r\n\r\n    // Remover por valor — O(n)\r\n    public bool Remover(int valor)\r\n    {\r\n        if (EstaVazia()) return false;\r\n\r\n        // caso especial: o valor está na cabeça\r\n        if (cabeca.Dado == valor)\r\n        {\r\n            cabeca = cabeca.Proximo;\r\n            return true;\r\n        }\r\n\r\n        // percorre guardando o nó anterior para poder ajustar o ponteiro\r\n        No anterior = cabeca;\r\n        No atual    = cabeca.Proximo;\r\n\r\n        while (atual != null)\r\n        {\r\n            if (atual.Dado == valor)\r\n            {\r\n                // o anterior \"pula\" o nó atual, ligando direto ao próximo\r\n                anterior.Proximo = atual.Proximo;\r\n                return true;\r\n            }\r\n\r\n            anterior = atual;\r\n            atual    = atual.Proximo;\r\n        }\r\n\r\n        return false; // valor não encontrado\r\n    }\r\n\r\n    // Busca — O(n)\r\n    public bool Buscar(int valor)\r\n    {\r\n        No atual = cabeca;\r\n\r\n        while (atual != null)\r\n        {\r\n            if (atual.Dado == valor)\r\n                return true;\r\n\r\n            atual = atual.Proximo;\r\n        }\r\n\r\n        return false;\r\n    }\r\n\r\n    // Tamanho — O(n)\r\n    public int Tamanho()\r\n    {\r\n        int contador = 0;\r\n        No atual = cabeca;\r\n\r\n        while (atual != null)\r\n        {\r\n            contador++;\r\n            atual = atual.Proximo;\r\n        }\r\n\r\n        return contador;\r\n    }\r\n\r\n    // Imprime a lista no formato: 10 → 20 → 30 → null\r\n    public void Imprimir()\r\n    {\r\n        if (EstaVazia())\r\n        {\r\n            Console.WriteLine(\"[lista vazia]\");\r\n            return;\r\n        }\r\n\r\n        No atual = cabeca;\r\n\r\n        while (atual != null)\r\n        {\r\n            Console.Write(atual.Dado);\r\n            if (atual.Proximo != null)\r\n                Console.Write(\" → \");\r\n            atual = atual.Proximo;\r\n        }\r\n\r\n        Console.WriteLine(\" → null\");\r\n    }\r\n}\r\n\r\n// ==========================================\r\n// Exemplo de uso\r\n// ==========================================\r\n\r\nclass Programa\r\n{\r\n    static void Main()\r\n    {\r\n        ListaSimples lista = new ListaSimples();\r\n\r\n        lista.InserirFim(10);\r\n        lista.InserirFim(20);\r\n        lista.InserirFim(30);\r\n        lista.InserirInicio(5);\r\n\r\n        Console.Write(\"Lista: \");\r\n        lista.Imprimir();\r\n        // 5 → 10 → 20 → 30 → null\r\n\r\n        Console.WriteLine(\"Tamanho: \" + lista.Tamanho()); // 4\r\n\r\n        Console.WriteLine(\"Tem o 20? \" + lista.Buscar(20)); // True\r\n        Console.WriteLine(\"Tem o 99? \" + lista.Buscar(99)); // False\r\n\r\n        lista.Remover(20);\r\n        Console.Write(\"Após remover 20: \");\r\n        lista.Imprimir();\r\n        // 5 → 10 → 30 → null\r\n\r\n        lista.RemoverInicio();\r\n        Console.Write(\"Após remover do início: \");\r\n        lista.Imprimir();\r\n        // 10 → 30 → null\r\n    }\r\n}', 8, 1, '2026-06-01 14:15:51', '2026-06-01 14:15:51'),
+(23, 'lista_simples', 'dica', 'Vídeo', 'https://www.youtube.com/watch?v=ZRJXgZsqnIs&time_continue=0&source_ve_path=MjM4NTE&embeds_referring_euri=http%3A%2F%2Flocalhost%2F', 9, 1, '2026-06-01 14:17:16', '2026-06-01 14:17:29'),
+(24, 'lista_simples', 'teoria', 'Resumo', 'Pontos principais:\r\nLista encadeada resolve o problema de tamanho fixo do array\r\nCada\r\nnó\r\ntem um valor e uma referência pro próximo\r\nA lista é acessada via ponteiro\r\nHEAD\r\nInserção no início é\r\nO(1)\r\nBusca e acesso por posição são\r\nO(n)\r\nPara remover do meio, é necessário guardar o nó\r\nanterior\r\nO fim da lista é marcado pelo ponteiro\r\nnull', 10, 1, '2026-06-01 14:19:08', '2026-06-01 14:19:08'),
+(25, 'lista_dupla', 'teoria', 'A diferença da lista simples', 'Na lista simplesmente encadeada, cada nó aponta apenas para o próximo. É como uma rua de mão única: você só pode seguir em frente.\r\n\r\nA Lista Duplamente Encadeada resolve isso: cada nó tem dois ponteiros, um pro próximo e um pro anterior. A navegação passa a ser nos dois sentidos.\r\n\r\nLista Simples — só vai pra frente:\r\n\r\nA\r\n→\r\nB\r\n→\r\nC\r\n→\r\nnull\r\n↓\r\nLista Dupla — vai e volta:\r\n\r\nnull\r\n⇄\r\nant←\r\nA\r\n→próx\r\n⇄\r\nant←\r\nB\r\n→próx\r\n⇄\r\nant←\r\nC\r\n→próx\r\n⇄\r\nnull\r\nDiferença chave:\r\nNa lista dupla, a lista guarda tanto o ponteiro head (início) quanto o tail (fim). Isso torna a inserção e remoção no fim tão rápida quanto no início —\r\nO(1)\r\n', 1, 1, '2026-06-01 14:20:20', '2026-06-01 14:20:20'),
+(26, 'lista_dupla', 'teoria', 'Estrutura do Nó Duplo', 'Parte do Nó	O que é	Lista Simples tinha?\r\ndado	O valor armazenado	Sim\r\nproximo	Aponta pro nó que vem depois	Sim\r\nanterior	Aponta pro nó que veio antes	Não — novidade da lista dupla\r\nEstrutura de um Nó Duplo:\r\n\r\nANTERIOR\r\n← 0x8C2A\r\nDADO\r\n42\r\nPRÓXIMO\r\n0x1A4F →\r\nTrês campos: anterior (quem veio antes), dado (o valor) e próximo (quem vem depois)', 2, 1, '2026-06-01 14:21:10', '2026-06-01 14:21:10'),
+(27, 'lista_dupla', 'teoria', 'Operações', 'Operação	Lista Simples	Lista Dupla	Por quê?\r\nInserir no início	O(1)	O(1)	Ambas têm HEAD\r\nInserir no fim	O(n)	O(1)	Lista dupla tem TAIL\r\nRemover do início	O(1)	O(1)	Ambas têm HEAD\r\nRemover do fim	O(n)	O(1)	Lista dupla tem TAIL + ponteiro anterior\r\nRemover do meio (dado o nó)	O(n)	O(1)	O nó já conhece o anterior\r\nBusca	O(n)	O(n)	Ainda precisa percorrer\r\nPercorrer ao contrário	Impossível	O(n)	Lista dupla tem ponteiro anterior\r\nO principal ganho da lista dupla:\r\nAs operações no fim da lista viram O(1) por causa do ponteiro tail. Remover um nó específico (quando você já tem a referência dele) também vira O(1) porque o próprio nó sabe quem é o anterior.', 3, 1, '2026-06-01 14:21:41', '2026-06-01 14:21:41'),
+(28, 'lista_dupla', 'teoria', 'Inserção explicada', 'Inserir no início — O(1)\r\nCria novo nó\r\nnovoNo.proximo = head\r\nnovoNo.anterior = null (ele passa a ser o primeiro)\r\nSe a lista não estava vazia: head.anterior = novoNo\r\nhead = novoNo\r\nSe a lista estava vazia: tail = novoNo também\r\nAtenção à ordem de atribuição:\r\nNa lista dupla, a ordem em que os ponteiros são ajustados importa. Se você mover o head antes de ajustar o ponteiro do nó antigo, perde a referência para ele. Sempre ajuste os ponteiros do novo nó primeiro, depois mova o head.\r\nInserir no fim — O(1) com TAIL\r\nCria novo nó\r\nnovoNo.anterior = tail\r\nnovoNo.proximo = null (ele passa a ser o último)\r\nSe a lista não estava vazia: tail.proximo = novoNo\r\ntail = novoNo\r\nSe estava vazia: head = novoNo também', 4, 1, '2026-06-01 14:22:16', '2026-06-01 14:22:16'),
+(29, 'lista_dupla', 'teoria', 'Remoção explicada', 'Se você tem a referência de um nó e quer removê-lo, não é preciso percorrer a lista para achar o anterior — o próprio nó já guarda essa informação.\r\n\r\nRemovendo um nó qualquer (dado o nó) — O(1):\r\nSe o nó tem um anterior: no.anterior.proximo = no.proximo\r\nSe o nó tem um próximo: no.proximo.anterior = no.anterior\r\nSe o nó era o HEAD: atualiza head = no.proximo\r\nSe o nó era o TAIL: atualiza tail = no.anterior\r\nPor que isso é útil na prática?\r\nPensa em uma playlist. Você está na música que toca agora — tem a referência dela. Para removê-la, na lista simples você teria que ir do início até encontrá-la. Na lista dupla, remove diretamente em O(1) porque ela sabe quem vem antes e depois.', 5, 1, '2026-06-01 14:22:51', '2026-06-01 14:22:51'),
+(30, 'lista_dupla', 'teoria', 'Quando usar qual?', 'Prefira a Lista Simples quando:\r\nVocê só precisa percorrer a lista em uma direção\r\nInserções e remoções são majoritariamente no início\r\nMemória é um fator crítico (a lista dupla usa um ponteiro a mais por nó)\r\nVocê quer uma implementação mais simples de manter\r\nExemplos: histórico de undo simples, pilha usando lista\r\n\r\nPrefira a Lista Dupla quando:\r\nVocê precisa percorrer nos dois sentidos (ex: player de música — anterior/próxima)\r\nRemoções acontecem em posições variadas e você já tem o nó em mão\r\nInserções e remoções frequentes no fim da lista\r\nVocê precisa implementar um Deque (fila dupla)\r\nExemplos: histórico do browser (voltar e avançar), LRU Cache, editor de texto\r\n7', 6, 1, '2026-06-01 14:23:33', '2026-06-01 14:23:33'),
+(31, 'lista_dupla', 'teoria', 'Código completo em C#', '// ==========================================\r\n// Classe do Nó Duplo\r\n// ==========================================\r\n\r\npublic class NoDuplo\r\n{\r\n    public int Dado;\r\n    public NoDuplo Anterior;\r\n    public NoDuplo Proximo;\r\n\r\n    public NoDuplo(int valor)\r\n    {\r\n        Dado     = valor;\r\n        Anterior = null;\r\n        Proximo  = null;\r\n    }\r\n}\r\n\r\n// ==========================================\r\n// Classe da Lista Dupla\r\n// ==========================================\r\n\r\npublic class ListaDupla\r\n{\r\n    private NoDuplo cabeca;\r\n    private NoDuplo cauda;\r\n    private int tamanho;\r\n\r\n    public ListaDupla()\r\n    {\r\n        cabeca  = null;\r\n        cauda   = null;\r\n        tamanho = 0;\r\n    }\r\n\r\n    public bool EstaVazia()\r\n    {\r\n        return cabeca == null;\r\n    }\r\n\r\n    public int Tamanho()\r\n    {\r\n        // tamanho é mantido atualizado a cada inserção/remoção, então é O(1)\r\n        return tamanho;\r\n    }\r\n\r\n    // Inserir no início — O(1)\r\n    public void InserirInicio(int valor)\r\n    {\r\n        NoDuplo novoNo = new NoDuplo(valor);\r\n\r\n        if (EstaVazia())\r\n        {\r\n            cabeca = novoNo;\r\n            cauda  = novoNo;\r\n        }\r\n        else\r\n        {\r\n            // ajusta os ponteiros antes de mover a cabeça\r\n            novoNo.Proximo  = cabeca;\r\n            cabeca.Anterior = novoNo;\r\n            cabeca          = novoNo;\r\n        }\r\n\r\n        tamanho++;\r\n    }\r\n\r\n    // Inserir no fim — O(1) graças ao ponteiro cauda\r\n    public void InserirFim(int valor)\r\n    {\r\n        NoDuplo novoNo = new NoDuplo(valor);\r\n\r\n        if (EstaVazia())\r\n        {\r\n            cabeca = novoNo;\r\n            cauda  = novoNo;\r\n        }\r\n        else\r\n        {\r\n            novoNo.Anterior = cauda;\r\n            cauda.Proximo   = novoNo;\r\n            cauda           = novoNo;\r\n        }\r\n\r\n        tamanho++;\r\n    }\r\n\r\n    // Remover do início — O(1)\r\n    public bool RemoverInicio()\r\n    {\r\n        if (EstaVazia()) return false;\r\n\r\n        if (cabeca == cauda)\r\n        {\r\n            // único elemento na lista\r\n            cabeca = null;\r\n            cauda  = null;\r\n        }\r\n        else\r\n        {\r\n            cabeca          = cabeca.Proximo;\r\n            cabeca.Anterior = null;\r\n        }\r\n\r\n        tamanho--;\r\n        return true;\r\n    }\r\n\r\n    // Remover do fim — O(1) graças ao ponteiro anterior da cauda\r\n    public bool RemoverFim()\r\n    {\r\n        if (EstaVazia()) return false;\r\n\r\n        if (cabeca == cauda)\r\n        {\r\n            cabeca = null;\r\n            cauda  = null;\r\n        }\r\n        else\r\n        {\r\n            cauda         = cauda.Anterior;\r\n            cauda.Proximo = null;\r\n        }\r\n\r\n        tamanho--;\r\n        return true;\r\n    }\r\n\r\n    // Remover por valor — O(n) para encontrar, O(1) para remover\r\n    public bool Remover(int valor)\r\n    {\r\n        NoDuplo atual = cabeca;\r\n\r\n        while (atual != null)\r\n        {\r\n            if (atual.Dado == valor)\r\n            {\r\n                if (atual == cabeca) return RemoverInicio();\r\n                if (atual == cauda)  return RemoverFim();\r\n\r\n                // caso geral: nó está no meio\r\n                // o anterior pula o atual e aponta direto pro próximo\r\n                atual.Anterior.Proximo = atual.Proximo;\r\n                atual.Proximo.Anterior = atual.Anterior;\r\n\r\n                tamanho--;\r\n                return true;\r\n            }\r\n\r\n            atual = atual.Proximo;\r\n        }\r\n\r\n        return false; // valor não encontrado\r\n    }\r\n\r\n    // Percorre do início ao fim\r\n    public void ImprimirDaFrente()\r\n    {\r\n        if (EstaVazia()) { Console.WriteLine(\"[lista vazia]\"); return; }\r\n\r\n        NoDuplo atual = cabeca;\r\n        Console.Write(\"null ⇄ \");\r\n\r\n        while (atual != null)\r\n        {\r\n            Console.Write(atual.Dado);\r\n            if (atual.Proximo != null) Console.Write(\" ⇄ \");\r\n            atual = atual.Proximo;\r\n        }\r\n\r\n        Console.WriteLine(\" ⇄ null\");\r\n    }\r\n\r\n    // Percorre do fim ao início — só possível por causa do ponteiro anterior\r\n    public void ImprimirDeTras()\r\n    {\r\n        if (EstaVazia()) { Console.WriteLine(\"[lista vazia]\"); return; }\r\n\r\n        NoDuplo atual = cauda;\r\n        Console.Write(\"null ⇄ \");\r\n\r\n        while (atual != null)\r\n        {\r\n            Console.Write(atual.Dado);\r\n            if (atual.Anterior != null) Console.Write(\" ⇄ \");\r\n            atual = atual.Anterior;\r\n        }\r\n\r\n        Console.WriteLine(\" ⇄ null\");\r\n    }\r\n}\r\n\r\n// ==========================================\r\n// Exemplo de uso\r\n// ==========================================\r\n\r\nclass Programa\r\n{\r\n    static void Main()\r\n    {\r\n        ListaDupla lista = new ListaDupla();\r\n\r\n        lista.InserirFim(10);\r\n        lista.InserirFim(20);\r\n        lista.InserirFim(30);\r\n        lista.InserirInicio(5);\r\n\r\n        Console.Write(\"Da frente: \");\r\n        lista.ImprimirDaFrente();\r\n        // null ⇄ 5 ⇄ 10 ⇄ 20 ⇄ 30 ⇄ null\r\n\r\n        Console.Write(\"De trás:   \");\r\n        lista.ImprimirDeTras();\r\n        // null ⇄ 30 ⇄ 20 ⇄ 10 ⇄ 5 ⇄ null\r\n\r\n        lista.RemoverFim();    // remove 30\r\n        lista.RemoverInicio(); // remove 5\r\n\r\n        Console.Write(\"Após remover início e fim: \");\r\n        lista.ImprimirDaFrente();\r\n        // null ⇄ 10 ⇄ 20 ⇄ null\r\n\r\n        lista.Remover(10);\r\n        Console.Write(\"Após remover 10: \");\r\n        lista.ImprimirDaFrente();\r\n        // null ⇄ 20 ⇄ null\r\n\r\n        Console.WriteLine(\"Tamanho: \" + lista.Tamanho()); // 1\r\n    }\r\n}', 7, 1, '2026-06-01 14:24:11', '2026-06-01 14:24:11'),
+(32, 'lista_dupla', 'dica', 'Vídeo', 'youtube.com/watch?v=LmHwMrYvhtI&time_continue=0&source_ve_path=MjM4NTE&embeds_referring_euri=http%3A%2F%2Flocalhost%2F', 8, 1, '2026-06-01 14:24:50', '2026-06-01 14:24:50'),
+(33, 'lista_dupla', 'teoria', 'Resumo', 'Pontos principais da Lista Dupla:\r\nCada nó tem\r\ntrês campos\r\n: anterior, dado, próximo\r\nA lista guarda\r\nHEAD e TAIL\r\n(início e fim)\r\nInserção e remoção no fim são\r\nO(1)\r\nRemoção de um nó (dada sua referência) é\r\nO(1)\r\nÉ possível percorrer a lista nos\r\ndois sentidos\r\nUsa mais memória que a lista simples — um ponteiro extra por nó', 9, 1, '2026-06-01 14:25:17', '2026-06-01 14:25:17');
 
-('tad', 'exemplo', 'Exemplo real: TAD no dia a dia',
-'<p>Pensa no controle remoto da TV:</p>
-<ul>
-    <li>Você aperta o botão "Volume +" e o volume sobe — essa é a <strong>interface</strong></li>
-    <li>Por dentro, o controle envia um sinal infravermelho, a TV interpreta e manda pro chip de áudio ajustar o volume — essa é a <strong>implementação</strong></li>
-</ul>
-<p>Você como usuário não precisa saber nada disso. Você só precisa saber apertar o botão. Isso é abstração!</p>', 55),
+--
+-- Índices para tabelas despejadas
+--
 
--- Lista Simples
-('lista_simples', 'dica', 'Por que não usar array sempre?',
-'<p>Você pode estar pensando: "se o array é mais rápido pra acessar por índice, por que eu usaria lista?"</p>
-<p>A resposta: depende do que você vai fazer com os dados.</p>
-<ul>
-    <li>Se você vai <strong>acessar elementos por posição frequentemente</strong> → array é melhor</li>
-    <li>Se você vai <strong>inserir e remover no início frequentemente</strong> → lista encadeada é melhor</li>
-    <li>Se você <strong>não sabe o tamanho dos dados de antemão</strong> → lista é melhor (crescimento dinâmico)</li>
-</ul>
-<p>Na prática, em linguagens modernas como C# e Java, as listas genéricas (<code>List&lt;T&gt;</code>) já combinam o melhor dos dois mundos usando arrays internamente com redimensionamento automático.</p>', 50),
+--
+-- Índices para tabela `conteudos`
+--
+ALTER TABLE `conteudos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_estrutura` (`estrutura`),
+  ADD KEY `idx_ordem` (`estrutura`,`ordem`);
 
-('lista_simples', 'exercicio', 'Exercício: implemente você mesmo',
-'<p>Tente implementar as seguintes operações por conta própria, sem olhar o código de exemplo:</p>
-<ol>
-    <li>Crie uma lista encadeada de strings</li>
-    <li>Implemente a inserção no início</li>
-    <li>Implemente a impressão de todos os elementos</li>
-    <li>Implemente a busca por um valor</li>
-    <li><strong>Desafio:</strong> implemente a inversão da lista (inverta a ordem dos nós)</li>
-</ol>
-<p>A inversão da lista é um exercício clássico de entrevista de emprego em empresas de tecnologia. Vale treinar!</p>', 90),
+--
+-- AUTO_INCREMENT de tabelas despejadas
+--
 
--- Lista Dupla
-('lista_dupla', 'exemplo', 'Exemplo real: playlist de músicas',
-'<p>Uma playlist de músicas é um exemplo perfeito de lista duplamente encadeada:</p>
-<ul>
-    <li>Cada música é um nó</li>
-    <li>O botão "Próxima" segue o ponteiro <code>proximo</code></li>
-    <li>O botão "Anterior" segue o ponteiro <code>anterior</code></li>
-    <li>Adicionar músicas no começo ou fim é O(1)</li>
-    <li>Remover a música que tá tocando (você já tem a referência) é O(1)</li>
-</ul>
-<p>Serviços como Spotify provavelmente usam estruturas mais sofisticadas, mas o conceito base é exatamente esse.</p>', 50),
+--
+-- AUTO_INCREMENT de tabela `conteudos`
+--
+ALTER TABLE `conteudos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+COMMIT;
 
-('lista_dupla', 'dica', 'LRU Cache — a aplicação mais famosa de lista dupla',
-'<p>Uma das aplicações mais conhecidas da lista duplamente encadeada é o <strong>LRU Cache</strong> (Least Recently Used).</p>
-<p>Ele é usado em bancos de dados, sistemas operacionais e até em perguntas de entrevistas de emprego.</p>
-<p>A ideia: o cache tem tamanho limitado. Quando enche, remove o item usado há mais tempo. A lista dupla (combinada com um HashMap) permite fazer isso em O(1) tanto pra acessar quanto pra remover.</p>
-<p>Se você entender lista duplamente encadeada bem, o LRU Cache vai fazer total sentido!</p>', 55);
-
--- ============================================================
--- Verificação final
--- ============================================================
-SELECT
-    estrutura,
-    COUNT(*) AS total_conteudos
-FROM conteudos
-GROUP BY estrutura
-ORDER BY estrutura;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
