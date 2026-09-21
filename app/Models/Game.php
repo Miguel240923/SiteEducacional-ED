@@ -1,10 +1,14 @@
 <?php
-/** Presentation metadata shared by the shop, wardrobe and quiz. */
+/** Regras e metadados de gamificação compartilhados por loja, avatar e quiz. */
 class Game {
     public const CATEGORIES = ['chapeu'=>'Chapéus','rosto'=>'Rostos','roupa'=>'Roupas'];
     public const FIELDS = ['chapeu'=>'avatar_chapeu','rosto'=>'avatar_face','roupa'=>'avatar_roupa'];
     public const THEMES = ['tad'=>'Tipo abstrato de dados','lista_simples'=>'Lista simplesmente encadeada','lista_dupla'=>'Lista duplamente encadeada','fila_fifo'=>'Fila FIFO','fila_prioridade'=>'Fila de prioridades','pilha'=>'Pilha encadeada','geral'=>'Fundamentos'];
 
+    /** Slugs das seis estruturas de estudo (todos os temas, menos o genérico). */
+    public static function estruturas() {
+        return array_values(array_diff(array_keys(self::THEMES),['geral']));
+    }
     public static function variant($item) {
         return ['🎩'=>'classic','👑'=>'crown','🧢'=>'cap','😀'=>'happy','🤓'=>'nerd','🤖'=>'robot','👕'=>'shirt','🧥'=>'hoodie','🥼'=>'coat'][$item['icone']] ?? 'default';
     }

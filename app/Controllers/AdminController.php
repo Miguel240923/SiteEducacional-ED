@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/../Models/Conteudo.php';
+require_once __DIR__.'/../Models/Game.php';
 class AdminController {
     private static function render($view,$data=[]) {
         extract($data);$basePath='../';$titulo=$titulo??'Administração';
@@ -21,7 +22,7 @@ class AdminController {
         verificarAdmin();$conteudos=Conteudo::listar();self::render('admin_painel',compact('conteudos')+['titulo'=>'Painel administrativo']);
     }
     private static function erroFormulario() {
-        if(!in_array($_POST['estrutura']??'',['tad','lista_simples','lista_dupla','fila_fifo','fila_prioridade','pilha'],true) || !in_array($_POST['tipo']??'',['teoria','exemplo','codigo','dica','exercicio'],true))return 'Selecione uma estrutura e um tipo válidos.';
+        if(!in_array($_POST['estrutura']??'',Game::estruturas(),true) || !in_array($_POST['tipo']??'',['teoria','exemplo','codigo','dica','exercicio'],true))return 'Selecione uma estrutura e um tipo válidos.';
         if(!trim($_POST['titulo']??'')||mb_strlen($_POST['titulo'])>255||!trim($_POST['conteudo']??''))return 'Preencha título (até 255 caracteres) e conteúdo.';
         if(filter_var($_POST['ordem']??null,FILTER_VALIDATE_INT,['options'=>['min_range'=>1,'max_range'=>999]])===false)return 'A ordem deve estar entre 1 e 999.';
         return '';
