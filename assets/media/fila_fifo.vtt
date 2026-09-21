@@ -1,0 +1,14 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.400
+Enqueue(10): primeiro nó
+
+00:00:02.400 --> 00:00:04.800
+Enqueue(20): entra no fim
+
+00:00:04.800 --> 00:00:07.200
+Enqueue(30): segue a ordem de chegada
+
+00:00:07.200 --> 00:00:09.600
+Dequeue(): retorna 10
+

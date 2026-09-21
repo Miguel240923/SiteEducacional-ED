@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title><?=isset($titulo)?htmlspecialchars($titulo).' | ':''?><?=SITE_NOME?></title>
+<link rel="stylesheet" href="<?= $basePath??'../' ?>assets/css/estilo.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?= $basePath??'../' ?>assets/css/refinamento.css">
+<link rel="stylesheet" href="<?= $basePath??'../' ?>assets/css/game.css">
+</head><body><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><header class="cabecalho"><div class="container"><a href="<?= $basePath??'../' ?>index.php" class="logo"><span class="logo-icone">{ }</span><span class="logo-texto"><?=SITE_NOME?></span><span class="logo-tag">Aprenda Estruturas de Dados</span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-controls="navMenu" aria-expanded="false">☰</button>
+<nav class="navegacao" id="navMenu"><a href="<?= $basePath??'../' ?>index.php">Início</a><a href="<?= $basePath??'../' ?>pages/tad.php">TAD</a><a href="<?= $basePath??'../' ?>pages/lista-simples.php">Lista simples</a><a href="<?= $basePath??'../' ?>pages/lista-dupla.php">Lista dupla</a><a href="<?= $basePath??'../' ?>pages/fila-fifo.php">Fila FIFO</a><a href="<?= $basePath??'../' ?>pages/fila-prioridade.php">Prioridades</a><a href="<?= $basePath??'../' ?>pages/pilha.php">Pilha</a><?php if(!empty($_SESSION['usuario_id'])):?><a href="<?= $basePath??'../' ?>area-usuario.php">👤 Minha área</a><?php else:?><a href="<?= $basePath??'../' ?>login-usuario.php">Entrar</a><?php endif;?><a href="<?= $basePath??'../' ?>admin/login.php" class="btn-admin">⚙ Admin</a></nav></div></header><main class="conteudo-principal" id="conteudo">

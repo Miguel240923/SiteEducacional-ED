@@ -1,0 +1,15 @@
+<?php
+require_once __DIR__.'/Conteudo.php';
+class Estrutura {
+    public static function aula($slug) {
+        $aulas=[
+            'fila_fifo'=>['titulo'=>'Fila encadeada FIFO','regra'=>'Primeiro a entrar, primeiro a sair.','texto'=>'Uma fila representa uma sequência de atendimento. Cada nó armazena um valor e uma referência para o próximo. As referências início e fim permitem inserir no fim e remover do início sem percorrer todos os nós. Ao remover o último nó, ambas devem passar a null.','uso'=>'Use filas para tarefas de impressão, mensagens e processamento de solicitações pela ordem de chegada.','custo'=>'Enqueue, Dequeue e Peek: O(1), mantendo início e fim. Busca: O(n). Memória: O(n).','exercicio'=>'Insira 10, 20 e 30. Remova um elemento e insira 40. Qual é a ordem de saída?','resposta'=>'20, 30 e 40. O 10 já foi removido; o 40 entrou no final.'],
+            'fila_prioridade'=>['titulo'=>'Fila de prioridades encadeada','regra'=>'Prioridade primeiro. FIFO nos empates.','texto'=>'Cada nó também guarda uma prioridade. Nesta implementação, números maiores são atendidos antes. A lista fica ordenada por prioridade decrescente; um novo nó passa pelos elementos de mesma prioridade antes de ser inserido. Isso mantém a ordem de chegada nos empates. A fila não é FIFO globalmente: essa regra vale dentro de cada prioridade.','uso'=>'Use em agendamento de tarefas e atendimento por urgência. Uma prioridade baixa pode esperar indefinidamente se tarefas urgentes continuarem chegando; técnicas como envelhecimento aumentam a prioridade com o tempo.','custo'=>'Inserção ordenada: O(n). Remoção e consulta do primeiro: O(1). Memória: O(n). Esses custos são da implementação encadeada, não de um heap.','exercicio'=>'Insira A com prioridade 2, B com prioridade 5 e C com prioridade 5. Quem sai primeiro?','resposta'=>'B, depois C e por último A. B e C têm a mesma prioridade, então o desempate segue FIFO.'],
+            'pilha'=>['titulo'=>'Pilha encadeada','regra'=>'Último a entrar, primeiro a sair.','texto'=>'A pilha segue LIFO. Uma única referência, topo, aponta para o nó mais recente. Push cria um nó que aponta para o topo anterior. Pop retorna o valor e avança o topo para o próximo nó. Peek consulta sem remover. Ao remover o último elemento, topo passa a null.','uso'=>'Use pilhas para desfazer ações, verificar parênteses balanceados e representar chamadas de funções. Cada nova operação fica acima das anteriores.','custo'=>'Push, Pop e Peek: O(1). Busca: O(n). Memória: O(n). Uma estrutura encadeada cresce dinamicamente, limitada pela memória disponível.','exercicio'=>'Execute Push(10), Push(20), Pop(), Push(30). Qual é o topo e qual é a próxima sequência de saída?','resposta'=>'Topo 30. As próximas remoções retornam 30 e 10. O 20 já saiu.']
+        ];
+        if(!isset($aulas[$slug]))throw new InvalidArgumentException('Estrutura inválida.');
+        $aula=$aulas[$slug];$aula['codigo']=file_get_contents(__DIR__.'/../../assets/examples/'.$slug.'.cs');
+        $aula['extras']=Conteudo::listar($slug);
+        return $aula;
+    }
+}
