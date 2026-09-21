@@ -53,38 +53,15 @@ O painel permite criar, editar e excluir conteúdo complementar de todas as seis
 
 ## Organização MVC
 
-- Rotas públicas: arquivos `.php` na raiz, em `pages/` e em `admin/`.
-- `app/Controllers/`: fluxo das requisições, autenticação, validação e escolha das telas.
-- `app/Models/`: usuários, quiz, loja, conteúdo e dados das aulas; consultas e alterações no MySQL.
-- `app/Views/`: páginas e componentes de apresentação.
-- `includes/`: configuração, sessão, cabeçalho e rodapé.
-- `assets/css/`: estilos de base e refinamento visual responsivo.
-- `assets/js/`: interações de navegação e simuladores.
-- `assets/examples/`: exemplos independentes de filas e pilha em C#.
-- `assets/media/`: GIFs, vídeos e legendas locais.
-- `sql/`: instalação e atualização incremental.
-- `tools/`: testes de integração, testes C# e gerador das mídias didáticas.
+O projeto não usa framework nem roteador único: cada página pública é um *front controller* de poucas linhas que carrega `includes/config.php` e delega a um método de Controller.
 
-## Verificação
-
-Consulte `VALIDACAO.md` para os testes executados e os limites da verificação.
-
-Com Python e os serviços do XAMPP em execução:
-
-```powershell
-python tools/check_integration.py
-```
-
-O teste usa as configurações locais padrão e cria contas/conteúdos temporários identificados por UUID, removendo somente esses registros ao terminar. Para outro ambiente, ajuste o endereço e o comando MySQL no script. A verificação administrativa pressupõe a senha local de demonstração.
-
-Com o SDK .NET 8 instalado:
-
-```powershell
-python tools/check_csharp.py
-```
-
-Se o SDK estiver em uma pasta específica, defina `ESTRUTURA_DOTNET` com o caminho do executável. O site PHP funciona sem instalar .NET; ele só é necessário para compilar os exemplos.
-
-## Entrega acadêmica
-
-O projeto e este manual estão disponíveis localmente. Ainda é necessário que o grupo forneça o **link do seu repositório GitHub**, identifique os integrantes e realize a entrega/apresentação solicitada pelo professor. A revisão não publicou nem enviou arquivos em nome do grupo.
+- **Rotas públicas**: arquivos `.php` na raiz, em `pages/` e em `admin/`. Não contêm regra de negócio; só chamam o Controller.
+- **`app/Controllers/`**: fluxo das requisições, autenticação, validação e escolha das telas.
+  - `PaginaController` e `EstruturaController`: páginas de teoria.
+  - `ContaController`: cadastro, login, perfil e recuperação de senha.
+  - `QuizController`: andamento do quiz na sessão (iniciar, responder, dica, concluir).
+  - `LojaController`: loja e personagem.
+  - `AdminController`: painel de conteúdo complementar.
+- **`app/Models/`**: acesso ao MySQL e regras de negócio (`User`, `Quiz`, `Shop`, `Conteudo`), dados das aulas (`Estrutura`) e regras/metadados de gamificação (`Game`, incluindo o cálculo de bônus usado pelo quiz).
+- **`app/Views/`**: páginas e componentes de apresentação. Não consultam o banco.
+- **`includes/`**: configuração, conexão, sessão, CSRF, cabeçalho e rodapé.
